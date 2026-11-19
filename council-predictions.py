@@ -235,6 +235,7 @@ async def bet(ctx, *, message: str):
 
 @bot.command()
 async def close(ctx):
+    await save(ctx)
     global accepting, amount1, amount2
     if ctx.author.id not in admin_users:
         return
@@ -368,13 +369,9 @@ async def call(ctx):
     else:
         await ctx.send("call cancelled.")
 
-
 @bot.command()
 async def save(ctx, file = SAVE_FILE):
     """Persist the current game state to disk (admin only)."""
-    if ctx.author.id not in admin_users:
-        return
-
     # Everything you want to keep goes in this dict:
     data = {
         "players": players,
@@ -436,5 +433,7 @@ async def load(ctx):
 @bot.command()
 async def help(ctx):
     await ctx.send("Welcome to the council 5 game! This game will last the whole council. Your goal is to make as many engbucks as possible. Each player will start out with 100 engbucks and you can make more by gambling on the bets that are sent out. Each bet will be open for a short period of time where you can use the !bet [amount] command to gamble. If you gambled correctly, you will get back the amount you bet, as well as a portion of the amount bet incorrectly (proportional to how much you bet). \n**COMMANDS:**\n  !join - join the game\n  !info - get information about your wallet and the current bet\n  !bet [amount] - gamble an amount of engbucks from your wallet (you will be asked which side you bet on after)\nCommands can be sent in the #bots channel of the A-Soc rep Discord server or in the bot's DMs (recommended).")
+    if ctx.author.id in admin_users:
+        await ctx.send("Admin commands:\n  !start [description, option 1, option 2] - start a new bet\n  !close - close the current bet\n  !call - call the result of the current bet\n  !alert [message] - send a message to all players\n  !save - save the game state to disk\n  !load - load the game state from disk")
 
 bot.run(DISCORD_TOKEN)
