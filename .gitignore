@@ -1,2 +1,4 @@
 venv/
 .env
+players.json
+backup_players.json
